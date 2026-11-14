@@ -1,0 +1,79 @@
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. If you want to use locales other than
+# English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t "hello"
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t("hello") %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more about the API, please read the Rails Internationalization guide
+# at https://guides.rubyonrails.org/i18n.html.
+#
+# Be aware that YAML interprets the following case-insensitive strings as
+# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
+# must be quoted to be interpreted as strings. For example:
+#
+#     en:
+#       "yes": yup
+#       enabled: "ON"
+
+en:
+  hints:
+    devise_views: 'Copy Devise''s view templates into your app with `rails generate devise:views -b form_for`. The sign-up form is `app/views/devise/registrations/new.html.erb` and the edit form is `edit.html.erb` in the same folder; add an `f.label :username` and an `f.text_field :username` to both.'
+    private_checkbox: 'Add `f.check_box :private` and `f.label :private` to the sign-up and edit forms in `app/views/devise/registrations/`.'
+    permit_fields: 'Devise ignores form fields that it hasn''t been told to accept. In `ApplicationController`, permit `:username` and `:private` for both `:sign_up` and `:account_update` with `devise_parameter_sanitizer.permit`.'
+    flash_messages: 'Devise puts its messages in `notice` and `alert`, and they only appear if a template displays them. Display both in `app/views/layouts/application.html.erb`, above the `yield`, so that every page shows them.'
+    sign_out_button: 'Devise''s sign-out route expects a DELETE request, which a link can''t make. Use a `<form action="/users/sign_out" method="post">` containing `<input type="hidden" name="_method" value="delete">` and a `<button>` with the text "Sign out".'
+    require_sign_in: 'Add `before_action(:authenticate_user!)` to `ApplicationController` so that every page requires the visitor to sign in first. Then make exceptions for the few pages that are open to everyone.'
+    skip_sign_in: 'With `before_action(:authenticate_user!)` in `ApplicationController`, every page requires signing in. The target lets anyone see the lists of photos and users: at the top of those two controllers, add `skip_before_action(:authenticate_user!, { :only => [:index] })`.'
+    root_route: 'After signing in, Devise sends the user to the homepage, so there must be a route for `/` in `config/routes.rb`. In the target it leads to the same action as `/photos`: `get("/", { :controller => "photos", :action => "index" })`.'
+    real_image_uploads: 'In the target, a photo''s image is a file that the user uploads, not a URL that they paste. Follow the lesson "Adding Image Uploads with CarrierWave": add the gem, generate an uploader, `mount_uploader` it on the `image` column of `Photo`, use an `<input type="file">` in a form that has `enctype="multipart/form-data"`, and assign the param to `image` in the action. You can stop before the Cloudinary section.'
+    optional_image: 'When someone edits only the caption, the form''s file input is empty and there is no image param at all, so `params.fetch` on it raises an error. Only assign a new image if `params.has_key?` says that one was sent.'
+    public_photos: 'Start from the users whose `private` column is false, then find the photos whose `owner_id` is one of their IDs: `Photo.where({ :owner_id => public_users.pluck(:id) })`.'
+    newest_first: 'Add `.order({ :created_at => :desc })` to the query.'
+    time_ago: 'Rails has a helper method for view templates, `time_ago_in_words`. Follow it with the word "ago": `<%= time_ago_in_words(the_photo.created_at) %> ago`.'
+    count_rows: 'Count the rows rather than displaying the `likes_count` or `comments_count` column: nothing keeps those columns up to date unless you write code to do it. For example, `the_photo.likes.count`. The view helper `pluralize(2, "like")` returns "2 likes", and `pluralize(1, "like")` returns "1 like". And count only what the target counts: a follower is someone whose request was accepted.'
+    current_user_owner: 'Don''t ask the user who they are with a form field. In the action, fill the foreign key in from `current_user.id`; anything else that the action needs (like the photo''s ID) can travel in an `<input type="hidden">`.'
+    only_your_own: 'Hiding a link isn''t protection, since anyone can type a URL. In the action, look the record up among the signed-in user''s own records (for example, `current_user.own_photos.where({ :id => the_id }).at(0)`, if you defined that association), or compare its foreign key with `current_user.id`. If it isn''t theirs, `redirect_to` another page with an alert instead of changing or deleting anything.'
+    private_photos: 'A private user''s photos are only for that user and for the people whose follow requests they have accepted. On the profile, show the top of the page to everyone (so that they can ask to follow) and leave out the photos. On the photo''s own page, `redirect_to` somewhere else with an alert. A method on the model that answers "may this user see this photo?" is handy, because you''ll need the answer in several places.'
+    private_everywhere: 'The rule about private users'' photos applies to every list, not only to their own profile. A user that you follow may have liked a photo that you aren''t allowed to see; leave it out, for example with `.select` and the same check that you use on the photo''s own page.'
+    accepted_only: 'A follow request only counts as following once its `status` is "accepted". Pending and rejected requests must not count as followers, and must not give access to photos, the feed, or discover. A method on `User` saves repeating the query: for example, `following` can find the user''s sent requests `.where({ :status => "accepted" })` and return `User.where({ :id => those_requests.pluck(:recipient_id) })`.'
+    follow_status: 'In the action that creates the follow request, look up the recipient. If their `private` column is true, set the status to "pending"; otherwise set it to "accepted". The form only needs a hidden input with the recipient''s ID.'
+    no_self_follow: 'In the action that creates the follow request, compare the recipient''s ID with `current_user.id` before saving, and redirect with an alert if they match.'
+    pending_requests: 'On the signed-in user''s own profile, list the follow requests where they are the recipient and the status is "pending". For each one, display the sender''s username next to two small forms that submit to `/modify_follow_request/ID`, one with an "Accept" button and one with a "Reject" button.'
+    hidden_status: 'The two forms differ only in a hidden input: `<input type="hidden" name="status_param" value="accepted">` in one, and `value="rejected"` in the other. The action assigns that param to the request''s status.'
+    liked_photos: 'Find the user''s likes, then the photos that they point at: `Photo.where({ :id => the_likes.pluck(:photo_id) })`. (Or, with an association: `has_many(:liked_photos, through: :likes, source: :photo)`.) The target displays them on the profile, in a second tab.'
+    feed: 'The feed is every photo posted by someone the signed-in user follows: `Photo.where({ :owner_id => ids })`, where `ids` are the IDs of the users they follow (the recipients of their accepted follow requests).'
+    discover: 'Discover is every photo liked by someone the signed-in user follows. Two steps: find the likes whose `fan_id` is the ID of one of the users they follow, then `Photo.where({ :id => those_likes.pluck(:photo_id) })`. A photo that two of them liked still appears only once this way.'
+    randomness: This test deals with randomness. If you think your code is correct but the test failed anyway, you might have just gotten unlucky; try running the test a couple more times.
+    copy_must_match: Make sure that the text exactly matches the target, including capitalization.
+    button_type: If you're not being sent anywhere when you click submit and you have an attribute `type="button"` on your `<button>` element, try removing it or changing it to `type="submit"`. Also, ensure that the `<button>` is within the `<form></form>`.
+    label_for_input: Make sure that you have a `for=""` attribute on each `<label>` and that it matches the `id=""` attribute on the corresponding `<input>`; otherwise our test won't know which input goes with which label (and neither would screen readers, etc).
+    names_for_inputs: |
+                      Give each `<input>` in your form a unique `name=""` attribute.
+
+                      `name=""` is the crucial, functional attribute of an `<input>` that determines what the user's input gets labeled as in the query string, and therefore what key it gets stored under in the `params` hash, and therefore how you will access it in your next RCAV.
+
+                      `placeholder=""`, etc, are nice attributes to use on an `<input>` in order to be user-friendly; but `name=""` is the essential one that you _must_ include.
+    number_to_currency: Rails has a handy helper method called [`number_to_currency()`](https://apidock.com/rails/ActionView/Helpers/NumberHelper/number_to_currency) that is available within `.html.erb` files.
+    number_to_percentage: Rails has a handy helper method called [`number_to_percentage()`](https://apidock.com/rails/ActionView/Helpers/NumberHelper/number_to_percentage) that is available within `.html.erb` files.
+    params_are_strings: Raw values from the `params` hash are all `String`s, so you may have to do some conversions using methods like [`.to_i`](https://apidock.com/ruby/String/to_i) or [`.to_f`](https://apidock.com/ruby/String/to_f) or [`Date.parse()`](https://apidock.com/ruby/Date/parse/class) before you perform any computations.
+    round: Ruby `Float`s have a [`.round()` method](https://apidock.com/ruby/Float/round) that you can use anywhere.
+    value_attribute: Use the `value=""` attribute to pre-populate an `<input>`.
+    embed_vs_interpolate: Remember, ERB tags `<%= %>` are only for use within `.html.erb` embedded Ruby HTML view templates. If you're trying to put together a Ruby string (like when you were trying to compose an API URL in Meteorologist), just use `+` or `#{}`.
+    redirect_vs_render: |
+                        The argument to the `render()` method is **a filename** of a `.html.erb` template file from within our `app/views` folder that we want to use to format the instance variables that we've defined within _this action_.
+
+                        The argument to the `redirect_to()` method is **a URL** that we want to send the user to which will trigger _a completely different action_.
+
+                        Don't provide the `redirect_to()` method with a filename as an argument, or the `render()` method with a URL as an argument.
