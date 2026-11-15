@@ -19,15 +19,15 @@ class CommentsController < ApplicationController
 
   def create
     the_comment = Comment.new
-    the_comment.author_id = params.fetch("author_id_param")
+    the_comment.author_id = current_user.id
     the_comment.body = params.fetch("body_param")
     the_comment.photo_id = params.fetch("photo_id_param")
 
     if the_comment.valid?
       the_comment.save
-      redirect_to("/comments", { :notice => "Comment created successfully." })
+      redirect_to("/photos/#{the_comment.photo_id}", { :notice => "Comment created successfully." })
     else
-      redirect_to("/comments", { :alert => the_comment.errors.full_messages.to_sentence })
+      redirect_to("/photos/#{the_comment.photo_id}", { :alert => the_comment.errors.full_messages.to_sentence })
     end
   end
 

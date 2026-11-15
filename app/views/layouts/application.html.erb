@@ -18,11 +18,96 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <!-- The official Tailwind CSS browser build -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3"></script>
+
+    <!-- Our own stylesheet, built on top of Tailwind -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/firstdraft/tailwind.appdev.css@latest/tailwind.appdev.css">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="appdev-styles">
+
+    <header>
+      <div class="container-two-thirds">
+        <nav>
+          <ul>
+            <li>
+              <strong>
+                <a href="/">
+                  Photogram
+                </a>
+              </strong>
+            </li>
+            
+            <li><a href="/photos">Photos</a></li>
+            
+            <li><a href="/users">Users</a></li>
+
+            <% if current_user.present? %>
+              <li>
+                <a href="/feed">Feed</a>
+              </li>
+              <li>
+                <a href="/discover">Discover</a>
+              </li>
+            <% end %>
+          </ul>
+          <ul>
+            <% if current_user.present? %>
+              <div class="dropdown" data-controller="dropdown">
+                  <button type="button" class="nav-link" data-action="click->dropdown#toggle" aria-expanded="false">
+                    <%= current_user.username %>
+                  </button>
+
+                  <ul class="dropdown-menu right-0 hidden" data-dropdown-target="menu">
+                    <li>
+                      <a href="/users/<%= current_user.username %>" class="dropdown-item">Your profile</a>
+                    </li>
+                    <li>
+                      <a href="/users/edit" class="dropdown-item">Edit profile</a>
+                    </li>
+                    <li>
+                      <form action="/users/sign_out" method="post">
+                        <input type="hidden" name="_method" value="delete">
+
+                        <button type="submit" class="dropdown-item">
+                          Sign out
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+            <% else %>
+              <li><a href="/users/sign_up">Sign Up</a></li>
+              <li><a href="/users/sign_in">Sign In</a></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </header>
+      
+    <main>
+      <div class="container-two-thirds">
+
+        <% if notice %>
+          <p class="alert alert-success"><%= notice %></p>
+        <% end %>
+
+        <% if alert %>
+          <p class="alert alert-danger"><%= alert %></p>
+        <% end %>
+        <%= yield %>
+      </div>
+    </main>
+
+<!--    <footer>
+      <div class="container-two-thirds">
+        <!-- Footer content here -->-->
+<!--      </div>
+    </footer>-->
+
   </body>
 </html>

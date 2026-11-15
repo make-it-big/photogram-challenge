@@ -1,0 +1,23 @@
+<div class="card">
+  <header>
+    <h2>
+      Users
+    </h2>
+  </header>
+
+  <ul>
+    <% @list_of_users.each do |a_user| %>
+      <li>
+        <a href="/users/<%= a_user.id %>">
+          <%= a_user.username %>
+
+            <% if a_user.private %>
+              <span class="badge text-bg-secondary">Private</span>
+            <% else %>
+              <span class="badge text-bg-light">Public</span>
+            <% end %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</div>

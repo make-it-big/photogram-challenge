@@ -1,125 +1,112 @@
 <nav aria-label="breadcrumb">
   <ul>
     <li><a href="/photos">Photos</a></li>
-    <li>Photo #<%= @the_photo.id %></li>
+    <li><a href="/users/<%= @the_photo.owner.username %>"><%= @the_photo.owner.username %></a></li>
+    <li>Photo </li>
   </ul>
 </nav>
 
 <div class="card">
-  <header>
-    <h1>
-      Photo #<%= @the_photo.id %> details
-    </h1>
+  <header class="flex justify-between items-center">
+    <a href="/users/<%= @the_photo.owner.username %>">
+      <strong><%= @the_photo.owner.username %></strong>
+    </a>
+
+    <small>
+      Posted <%= time_ago_in_words(@the_photo.created_at) %> ago
+    </small>
   </header>
 
-  <dl>
-    <dt>
-      Caption
-    </dt>
-    <dd>
-      <%= @the_photo.caption %>
-    </dd>
+  <img src="<%= @the_photo.image %>" alt="<%= @the_photo.caption %>" class="block max-w-full mx-auto rounded mb-4">
 
-    <dt>
-      Ccomments count
-    </dt>
-    <dd>
-      <%= @the_photo.ccomments_count %>
-    </dd>
+  <p><%= @the_photo.caption %></p>
 
-    <dt>
-      Image
-    </dt>
-    <dd>
-      <%= @the_photo.image %>
-    </dd>
-
-    <dt>
-      Likes count
-    </dt>
-    <dd>
-      <%= @the_photo.likes_count %>
-    </dd>
-
-    <dt>
-      Owner
-    </dt>
-    <dd>
-      <%= @the_photo.owner_id %>
-    </dd>
-
-    <dt>
-      Created at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_photo.created_at) %> ago
-    </dd>
-
-    <dt>
-      Updated at
-    </dt>
-    <dd>
-      <%= time_ago_in_words(@the_photo.updated_at) %> ago
-    </dd>
-  </dl>
-
-  <p>
-    <a href="/delete_photo/<%= @the_photo.id %>" class="btn btn-outline">
-      Delete photo
-    </a>
+  <p><strong><%= @list_of_likes.count %> likes</strong>
+  <small>from
+    <% @list_of_likes.each do |like| %>
+      <%= like.fan.username %>, 
+    <% end %>
+  </small>
   </p>
+
+  <% if @current_user_like_status %>
+    <a href="/delete_like/<%= @the_photo.id %>" class="btn btn-outline">
+      Unlike
+    </a>
+  <% else %>
+    <form action="/insert_like" method="post">
+      <input type="hidden" name="photo_id_param" value="<%= @the_photo.id %>">
+
+      <button type="submit" class="btn btn-outline-primary w-auto">
+        Like
+      </button>
+    </form>
+  <% end %>
+  
 </div>
 
+
+<% if @the_photo.owner.id == current_user.id %>
 <div class="card">
-  <header>
-    <h2>
-      Edit photo
-    </h2>
+  <header class="flex justify-between items-center">
+    <h2>Edit photo</h2>
+
+    <a href="/delete_photo/<%= @the_photo.id %>" class="btn btn-outline-danger btn-sm">
+      Delete this photo
+    </a>
   </header>
 
-  <form action="/modify_photo/<%= @the_photo.id %>" method="post">
-    <div>
+  <form action="/modify_photo/<%= @the_photo.id %>" method="post" enctype="multipart/form-data">
+      <label for="image_field">
+        Replace image
+      </label>
+
+      <input type="file" id="image_field" name="image_param" accept="image/*">
+
       <label for="caption_field">
         Caption
       </label>
 
-      <textarea id="caption_field" name="caption_param"><%= @the_photo.caption %></textarea>
-    </div>
+      <textarea id="caption_field" name="caption_param" rows="2"><%= @the_photo.caption %></textarea>
 
-    <div>
-      <label for="ccomments_count_field">
-        Ccomments count
-      </label>
+      <button type="submit">
+        Update photo
+      </button>
+    </form>
+</div>
+<% end %>
 
-      <input type="number" id="ccomments_count_field" name="ccomments_count_param" value="<%= @the_photo.ccomments_count %>">
-    </div>
 
-    <div>
-      <label for="image_field">
-        Image
-      </label>
+<div class="card">
+  <header>
+    <h2><%= @the_photo.comments.count %> comments</h2>
+  </header>
 
-      <input type="text" id="image_field" name="image_param" value="<%= @the_photo.image %>">
-    </div>
+  <ul>
+    <% @the_photo.comments.each do |comment| %>
+      <li>
+        <strong><%= comment.fan.username %></strong>
 
-    <div>
-      <label for="likes_count_field">
-        Likes count
-      </label>
+        <%= comment.body %>
 
-      <input type="number" id="likes_count_field" name="likes_count_param" value="<%= @the_photo.likes_count %>">
-    </div>
+        <small class="block">
+          <%= time_ago_in_words(comment.created_at) %> ago
+        </small>
+      </li>
+    <% end %>
+  </ul>
 
-    <div>
-      <label for="owner_id_field">
-        Owner
-      </label>
+  <form action="/insert_comment" method="post" class="mt-4">
+    <input type="hidden" name="photo_id_param" value="<%= @the_photo.id %>">
 
-      <input type="number" id="owner_id_field" name="owner_id_param" value="<%= @the_photo.owner_id %>">
-    </div>
+    <label for="body_field">
+      Comment
+    </label>
+
+    <textarea id="body_field" name="body_param" rows="2" placeholder="Add a comment..."></textarea>
 
     <button type="submit">
-      Update photo
+      Add comment
     </button>
   </form>
 </div>

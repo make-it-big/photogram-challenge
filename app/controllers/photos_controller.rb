@@ -11,10 +11,20 @@ class PhotosController < ApplicationController
     the_id = params.fetch("path_id")
 
     matching_photos = Photo.where({ :id => the_id })
+    matching_likes = Like.where({ :photo_id => the_id })
+    current_user_like_status = matching_likes.where({ :fan_id => current_user.id }).any?
+    matching_comments = Comment.where({ :photo_id => the_id })
 
     @the_photo = matching_photos.at(0)
+    @list_of_likes = matching_likes
+    @current_user_like_status = current_user_like_status
+    @list_of_comments = matching_comments
 
-    render({ :template => "photo_templates/show" })
+    if current_user.present?
+      render({ :template => "photo_templates/show" })
+    else
+      redirect_to("/users/sign_in", { :alert => "You need to sign in or sign up before continuing." })
+    end
   end
 
   def create
