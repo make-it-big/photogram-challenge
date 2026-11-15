@@ -1,0 +1,171 @@
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/users">Users</a></li>
+    <li><%= @the_user.username %></li>
+  </ul>
+</nav>
+
+<div class="card">
+  <div class="flex justify-between items-start gap-4">
+    <div>
+      <h1 class="mb-0">
+        <%= @the_user.username %>
+      </h1>
+
+      <p class="mb-0">
+        <% if @the_user.private %>
+          <span class="badge text-bg-secondary">Private</span>
+        <% else %>
+          <span class="badge text-bg-light">Public</span>
+        <% end %>
+
+        <%= @the_user.received_follow_requests.where({ :status => "accepted" }).count %> followers · <%= @the_user.sent_follow_requests.where({ :status => "accepted" }).count %> following
+      </p>
+    </div>
+
+    <% if @the_user == current_user %>
+      <div>
+          <a href="/users/edit" class="btn btn-outline">
+            Edit profile
+          </a>
+      </div>
+    <% else %>
+      <% if @the_user.received_follow_requests.where({ :status => "accepted" }).exists?({ :sender_id => current_user.id }) %>
+        <div>
+          <a href="/delete_follow_request/<%= @the_user.id %>" class="btn btn-outline">
+            Unfollow
+          </a>
+        </div>
+      <% elsif @the_user.private == true && @the_user.received_follow_requests.where({ :status => "pending" }).exists?({ :sender_id => current_user.id }) %>
+        <div>
+            Request sent.
+
+            <a href="/delete_follow_request/<%= @the_user.id %>" class="btn btn-outline btn-sm">
+              Cancel
+            </a>
+        </div>
+      
+      <% else %>
+        <div>
+            <form action="/insert_follow_request" method="post">
+              <input type="hidden" name="recipient_id_param" value="<%= @the_user.id %>">
+
+              <button type="submit">
+                Follow
+              </button>
+            </form>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<% if current_user == @the_user %>
+
+  <div class="card pb-0">
+    <header>
+      <h2>Follow requests</h2>
+    </header>
+    <ul>
+
+      <% @the_user.received_follow_requests.where({ :status => "pending" }).each do |a_follow_request| %>
+        <li class="flex justify-between items-center gap-4">
+          <a href="/users/<%= a_follow_request.sender.username %>">
+            <%= a_follow_request.sender.username %>
+          </a>
+
+          <div class="flex gap-2">
+            <form action="/modify_follow_request/<%= a_follow_request.id %>" method="post">
+              <input type="hidden" name="status_param" value="accepted">
+
+              <button type="submit" class="btn btn-sm">
+                Accept
+              </button>
+            </form>
+
+            <form action="/modify_follow_request/<%= a_follow_request.id %>" method="post">
+              <input type="hidden" name="status_param" value="rejected">
+
+              <button type="submit" class="btn btn-outline btn-sm">
+                Reject
+              </button>
+            </form>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+
+      <% if @the_user.received_follow_requests.where({ :status => "pending" }).empty? %>
+        <p class="my-4">
+          No pending follow requests.
+        </p>
+      <% end %>
+  </div>
+
+<% end %>
+
+
+<% if @the_user.private == false || current_user == @the_user || @the_user.received_follow_requests.where({ :status => "accepted" }).exists?({ :sender_id => current_user.id }) %>
+
+  <div data-controller="tabs">
+    <ul class="nav nav-underline mb-4" role="tablist">
+      <li>
+        <button type="button" class="nav-link active" data-tabs-target="tab" data-action="click-&gt;tabs#select" aria-controls="posts-pane" aria-selected="true">
+          Posts <span class="badge text-bg-secondary"><%= @the_user.posts.count %> </span>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="nav-link" data-tabs-target="tab" data-action="click-&gt;tabs#select" aria-controls="liked-pane" aria-selected="false">
+          Liked <span class="badge text-bg-secondary"><%= @the_user.likes.count %></span>
+        </button>
+      </li>
+    </ul>
+
+    <div id="posts-pane" class="tab-pane active" data-tabs-target="panel">
+      <div class="card py-0">
+        <ul>
+
+            
+            <% @the_user.posts.each do |a_post| %>
+              <li>
+                <a href="/photos/<%= a_post.id %>">
+                  <img src="<%= a_post.image %>" alt="" class="w-20 h-20 object-cover rounded">
+
+                  <span>
+                    <%= a_post.caption %>
+
+                    <small class="block">
+                      <%= a_post.owner.username %> · <%= time_ago_in_words(a_post.created_at) %> ago
+                    </small>
+                  </span>
+                </a>
+              </li>
+            <% end %>
+        </ul>
+
+      </div>
+    </div>
+
+    <div id="liked-pane" class="tab-pane" data-tabs-target="panel">
+      <div class="card py-0">
+        <ul>
+            <% @the_user.likes.each do |a_like| %>
+              <li>
+                <a href="/photos/<%= a_like.photo.id %>">
+                  <img src="<%= a_like.photo.image %>" alt="" class="w-20 h-20 object-cover rounded">
+
+                  <span>
+                    <%= a_like.photo.caption %>
+
+                    <small class="block">
+                      <%= a_like.photo.owner.username %> · <%= time_ago_in_words(a_like.photo.created_at) %> ago
+                    </small>
+                  </span>
+                </a>
+              </li>
+            <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+<% end %>

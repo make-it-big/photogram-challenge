@@ -1,4 +1,8 @@
 class PhotosController < ApplicationController
+  
+  before_action :authenticate_user!, only: [:show]
+
+
   def index
     matching_photos = Photo.all
 
@@ -19,12 +23,9 @@ class PhotosController < ApplicationController
     @list_of_likes = matching_likes
     @current_user_like_status = current_user_like_status
     @list_of_comments = matching_comments
+  
+    render({ :template => "photo_templates/show" })
 
-    if current_user.present?
-      render({ :template => "photo_templates/show" })
-    else
-      redirect_to("/users/sign_in", { :alert => "You need to sign in or sign up before continuing." })
-    end
   end
 
   def create

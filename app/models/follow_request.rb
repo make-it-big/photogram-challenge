@@ -10,4 +10,10 @@
 #  sender_id    :integer
 #
 class FollowRequest < ApplicationRecord
+
+  belongs_to :sender, class_name: "User", foreign_key: "sender_id", primary_key: "id"
+  belongs_to :recipient, class_name: "User", foreign_key: "recipient_id", primary_key: "id"
+
+  validates :status, inclusion: { in: ["pending", "accepted", "rejected"] }
+  validates :recipient_id, uniqueness: { scope: :sender_id }
 end

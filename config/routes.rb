@@ -4,20 +4,22 @@ Rails.application.routes.draw do
 
   get("/", { :controller => "photos", :action => "index" })
   get("/users", { :controller => "users", :action => "index" })
-  # # CREATE
-  # post("/insert_follow_request", { :controller => "follow_requests", :action => "create" })
+  get("/users/:username", { :controller => "users", :action => "show" })
+  
+  # CREATE
+  post("/insert_follow_request", { :controller => "follow_requests", :action => "create" })
 
   # # READ
   # get("/follow_requests", { :controller => "follow_requests", :action => "index" })
 
   # get("/follow_requests/:path_id", { :controller => "follow_requests", :action => "show" })
 
-  # # UPDATE
+  # UPDATE
 
-  # post("/modify_follow_request/:path_id", { :controller => "follow_requests", :action => "update" })
+  post("/modify_follow_request/:path_id", { :controller => "follow_requests", :action => "update" })
 
-  # # DELETE
-  # get("/delete_follow_request/:path_id", { :controller => "follow_requests", :action => "destroy" })
+  # DELETE
+  get("/delete_follow_request/:path_id", { :controller => "follow_requests", :action => "destroy" })
 
   # #------------------------------
 
