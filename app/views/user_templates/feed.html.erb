@@ -1,0 +1,25 @@
+<div class="card">
+  <header>
+    <h1>Your feed</h1>
+    <small>Posts by people you follow</small>
+  </header>
+
+  <ul>
+    <% @feed_photos.each do |a_photo| %>
+      <li>
+        <a href="/photos/<%= a_photo.id %>">
+          <img src="<%= a_photo.image %>" alt="" class="w-20 h-20 object-cover rounded">
+
+          <span>
+            <%= a_photo.caption %>
+
+            <small class="block">
+              <%= a_photo.owner.username %> · <%= time_ago_in_words(a_photo.created_at) %> ago
+
+            </small>
+          </span>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</div>

@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get("/", { :controller => "photos", :action => "index" })
   get("/users", { :controller => "users", :action => "index" })
   get("/users/:username", { :controller => "users", :action => "show" })
+  get("/feed", { :controller => "users", :action => "feed" })
+  get("/discover", { :controller => "users", :action => "discover" })
   
   # CREATE
   post("/insert_follow_request", { :controller => "follow_requests", :action => "create" })
