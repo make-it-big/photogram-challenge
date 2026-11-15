@@ -1,5 +1,5 @@
 {
-  "chat.disableAIFeatures": true,
+  "chat.disableAIFeatures": false,
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "editor.tabSize": 2,
   "editor.acceptSuggestionOnEnter": "off",
@@ -54,5 +54,6 @@
   },
   "files.associations": {
     "*.html.erb": "erb"
-  }
+  },
+  "claudeCodeChat.permissions.yoloMode": false
 }

@@ -518,6 +518,7 @@ DEPENDENCIES
   cgi
   debug
   dev_toolbar (~> 3.0.0)
+  devise
   dotenv
   draft_generators (~> 0.0.7)
   faker

@@ -1,0 +1,95 @@
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/comments">Comments</a></li>
+    <li>Comment #<%= @the_comment.id %></li>
+  </ul>
+</nav>
+
+<div class="card">
+  <header>
+    <h1>
+      Comment #<%= @the_comment.id %> details
+    </h1>
+  </header>
+
+  <dl>
+    <dt>
+      Author
+    </dt>
+    <dd>
+      <%= @the_comment.author_id %>
+    </dd>
+
+    <dt>
+      Body
+    </dt>
+    <dd>
+      <%= @the_comment.body %>
+    </dd>
+
+    <dt>
+      Photo
+    </dt>
+    <dd>
+      <%= @the_comment.photo_id %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_comment.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_comment.updated_at) %> ago
+    </dd>
+  </dl>
+
+  <p>
+    <a href="/delete_comment/<%= @the_comment.id %>" class="btn btn-outline">
+      Delete comment
+    </a>
+  </p>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Edit comment
+    </h2>
+  </header>
+
+  <form action="/modify_comment/<%= @the_comment.id %>" method="post">
+    <div>
+      <label for="author_id_field">
+        Author
+      </label>
+
+      <input type="number" id="author_id_field" name="author_id_param" value="<%= @the_comment.author_id %>">
+    </div>
+
+    <div>
+      <label for="body_field">
+        Body
+      </label>
+
+      <textarea id="body_field" name="body_param"><%= @the_comment.body %></textarea>
+    </div>
+
+    <div>
+      <label for="photo_id_field">
+        Photo
+      </label>
+
+      <input type="number" id="photo_id_field" name="photo_id_param" value="<%= @the_comment.photo_id %>">
+    </div>
+
+    <button type="submit">
+      Update comment
+    </button>
+  </form>
+</div>

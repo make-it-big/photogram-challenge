@@ -1,0 +1,125 @@
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/photos">Photos</a></li>
+    <li>Photo #<%= @the_photo.id %></li>
+  </ul>
+</nav>
+
+<div class="card">
+  <header>
+    <h1>
+      Photo #<%= @the_photo.id %> details
+    </h1>
+  </header>
+
+  <dl>
+    <dt>
+      Caption
+    </dt>
+    <dd>
+      <%= @the_photo.caption %>
+    </dd>
+
+    <dt>
+      Ccomments count
+    </dt>
+    <dd>
+      <%= @the_photo.ccomments_count %>
+    </dd>
+
+    <dt>
+      Image
+    </dt>
+    <dd>
+      <%= @the_photo.image %>
+    </dd>
+
+    <dt>
+      Likes count
+    </dt>
+    <dd>
+      <%= @the_photo.likes_count %>
+    </dd>
+
+    <dt>
+      Owner
+    </dt>
+    <dd>
+      <%= @the_photo.owner_id %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_photo.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_photo.updated_at) %> ago
+    </dd>
+  </dl>
+
+  <p>
+    <a href="/delete_photo/<%= @the_photo.id %>" class="btn btn-outline">
+      Delete photo
+    </a>
+  </p>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Edit photo
+    </h2>
+  </header>
+
+  <form action="/modify_photo/<%= @the_photo.id %>" method="post">
+    <div>
+      <label for="caption_field">
+        Caption
+      </label>
+
+      <textarea id="caption_field" name="caption_param"><%= @the_photo.caption %></textarea>
+    </div>
+
+    <div>
+      <label for="ccomments_count_field">
+        Ccomments count
+      </label>
+
+      <input type="number" id="ccomments_count_field" name="ccomments_count_param" value="<%= @the_photo.ccomments_count %>">
+    </div>
+
+    <div>
+      <label for="image_field">
+        Image
+      </label>
+
+      <input type="text" id="image_field" name="image_param" value="<%= @the_photo.image %>">
+    </div>
+
+    <div>
+      <label for="likes_count_field">
+        Likes count
+      </label>
+
+      <input type="number" id="likes_count_field" name="likes_count_param" value="<%= @the_photo.likes_count %>">
+    </div>
+
+    <div>
+      <label for="owner_id_field">
+        Owner
+      </label>
+
+      <input type="number" id="owner_id_field" name="owner_id_param" value="<%= @the_photo.owner_id %>">
+    </div>
+
+    <button type="submit">
+      Update photo
+    </button>
+  </form>
+</div>

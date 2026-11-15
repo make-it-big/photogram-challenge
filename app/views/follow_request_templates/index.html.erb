@@ -1,0 +1,55 @@
+<div class="card">
+  <header>
+    <h1>
+      List of all follow requests
+    </h1>
+  </header>
+
+  <ul>
+    <% @list_of_follow_requests.each do |a_follow_request| %>
+      <li>
+        <a href="/follow_requests/<%= a_follow_request.id %>">
+          Follow request #<%= a_follow_request.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Add a new follow request
+    </h2>
+  </header>
+
+  <form action="/insert_follow_request" method="post">
+    <div>
+      <label for="recepient_id_field">
+        Recepient
+      </label>
+
+      <input type="number" id="recepient_id_field" name="recepient_id_param">
+    </div>
+
+    <div>
+      <label for="sender_id_field">
+        Sender
+      </label>
+
+      <input type="number" id="sender_id_field" name="sender_id_param">
+    </div>
+
+    <div>
+      <label for="status_field">
+        Status
+      </label>
+
+      <input type="text" id="status_field" name="status_param">
+    </div>
+
+    <button type="submit">
+      Create follow request
+    </button>
+  </form>
+</div>

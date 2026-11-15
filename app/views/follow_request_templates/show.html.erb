@@ -1,0 +1,95 @@
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/follow_requests">Follow requests</a></li>
+    <li>Follow request #<%= @the_follow_request.id %></li>
+  </ul>
+</nav>
+
+<div class="card">
+  <header>
+    <h1>
+      Follow request #<%= @the_follow_request.id %> details
+    </h1>
+  </header>
+
+  <dl>
+    <dt>
+      Recepient
+    </dt>
+    <dd>
+      <%= @the_follow_request.recepient_id %>
+    </dd>
+
+    <dt>
+      Sender
+    </dt>
+    <dd>
+      <%= @the_follow_request.sender_id %>
+    </dd>
+
+    <dt>
+      Status
+    </dt>
+    <dd>
+      <%= @the_follow_request.status %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_follow_request.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_follow_request.updated_at) %> ago
+    </dd>
+  </dl>
+
+  <p>
+    <a href="/delete_follow_request/<%= @the_follow_request.id %>" class="btn btn-outline">
+      Delete follow request
+    </a>
+  </p>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Edit follow request
+    </h2>
+  </header>
+
+  <form action="/modify_follow_request/<%= @the_follow_request.id %>" method="post">
+    <div>
+      <label for="recepient_id_field">
+        Recepient
+      </label>
+
+      <input type="number" id="recepient_id_field" name="recepient_id_param" value="<%= @the_follow_request.recepient_id %>">
+    </div>
+
+    <div>
+      <label for="sender_id_field">
+        Sender
+      </label>
+
+      <input type="number" id="sender_id_field" name="sender_id_param" value="<%= @the_follow_request.sender_id %>">
+    </div>
+
+    <div>
+      <label for="status_field">
+        Status
+      </label>
+
+      <input type="text" id="status_field" name="status_param" value="<%= @the_follow_request.status %>">
+    </div>
+
+    <button type="submit">
+      Update follow request
+    </button>
+  </form>
+</div>

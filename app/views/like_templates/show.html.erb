@@ -1,0 +1,80 @@
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/likes">Likes</a></li>
+    <li>Like #<%= @the_like.id %></li>
+  </ul>
+</nav>
+
+<div class="card">
+  <header>
+    <h1>
+      Like #<%= @the_like.id %> details
+    </h1>
+  </header>
+
+  <dl>
+    <dt>
+      Fan
+    </dt>
+    <dd>
+      <%= @the_like.fan_id %>
+    </dd>
+
+    <dt>
+      Photo
+    </dt>
+    <dd>
+      <%= @the_like.photo_id %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_like.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_like.updated_at) %> ago
+    </dd>
+  </dl>
+
+  <p>
+    <a href="/delete_like/<%= @the_like.id %>" class="btn btn-outline">
+      Delete like
+    </a>
+  </p>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Edit like
+    </h2>
+  </header>
+
+  <form action="/modify_like/<%= @the_like.id %>" method="post">
+    <div>
+      <label for="fan_id_field">
+        Fan
+      </label>
+
+      <input type="number" id="fan_id_field" name="fan_id_param" value="<%= @the_like.fan_id %>">
+    </div>
+
+    <div>
+      <label for="photo_id_field">
+        Photo
+      </label>
+
+      <input type="number" id="photo_id_field" name="photo_id_param" value="<%= @the_like.photo_id %>">
+    </div>
+
+    <button type="submit">
+      Update like
+    </button>
+  </form>
+</div>

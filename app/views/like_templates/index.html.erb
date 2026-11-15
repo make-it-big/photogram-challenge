@@ -1,0 +1,47 @@
+<div class="card">
+  <header>
+    <h1>
+      List of all likes
+    </h1>
+  </header>
+
+  <ul>
+    <% @list_of_likes.each do |a_like| %>
+      <li>
+        <a href="/likes/<%= a_like.id %>">
+          Like #<%= a_like.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="card">
+  <header>
+    <h2>
+      Add a new like
+    </h2>
+  </header>
+
+  <form action="/insert_like" method="post">
+    <div>
+      <label for="fan_id_field">
+        Fan
+      </label>
+
+      <input type="number" id="fan_id_field" name="fan_id_param">
+    </div>
+
+    <div>
+      <label for="photo_id_field">
+        Photo
+      </label>
+
+      <input type="number" id="photo_id_field" name="photo_id_param">
+    </div>
+
+    <button type="submit">
+      Create like
+    </button>
+  </form>
+</div>
