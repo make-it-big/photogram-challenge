@@ -49,8 +49,13 @@ class LikesController < ApplicationController
     the_id = params.fetch("path_id")
     the_like = Like.where({ :photo_id => the_id, :fan_id => current_user.id }).at(0)
 
-    the_like.destroy
+      if the_like.present?
+        the_photo_id = the_like.photo_id
+        the_like.destroy
 
-    redirect_to("/photos/#{the_id}", { :notice => "Like deleted successfully." } )
+        redirect_to("/photos/#{the_photo_id}", { :notice => "Like deleted successfully." })
+      else
+        redirect_to("/photos", { :alert => "You can only remove your own likes." })
+      end
   end
 end

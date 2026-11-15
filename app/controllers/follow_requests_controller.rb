@@ -18,20 +18,24 @@ class FollowRequestsController < ApplicationController
   end
 
   def create
+    recipient = User.where({ :id => params.fetch("recipient_id_param") }).at(0)
+
+    if recipient.nil?
+      redirect_to("/", { :alert => "That user doesn't exist." })
+      return
+    end
+
     the_follow_request = FollowRequest.new
-    the_follow_request.recipient_id = params.fetch("recipient_id_param")
     the_follow_request.sender_id = current_user.id
+    the_follow_request.recipient_id = recipient.id
 
-    recipient = User.where({ :id => params.fetch("recipient_id_param") }).first
-
-    if recipient.private == true
+    if recipient.private
       the_follow_request.status = "pending"
     else
       the_follow_request.status = "accepted"
     end
 
-    if the_follow_request.valid?
-      the_follow_request.save
+    if the_follow_request.save
       redirect_to("/users/#{recipient.username}", { :notice => "Follow request created successfully." })
     else
       redirect_to("/users/#{recipient.username}", { :alert => the_follow_request.errors.full_messages.to_sentence })
@@ -44,7 +48,7 @@ class FollowRequestsController < ApplicationController
 
     the_follow_request.status = params.fetch("status_param")
 
-    if the_follow_request.valid?
+    if the_follow_request.valid? && the_follow_request.recipient_id == current_user.id
       the_follow_request.save
       redirect_to("/users/#{the_follow_request.recipient.username}", { :notice => "Follow request updated successfully." } )
     else
@@ -53,14 +57,16 @@ class FollowRequestsController < ApplicationController
   end
 
   def destroy
-    recipient_id = params.fetch("path_id")
-    recipient = User.where({ :id => recipient_id }).at(0)
-    sender_id = current_user.id
+    the_id = params.fetch("path_id")
+    the_follow_request = current_user.sent_follow_requests.where({ :id => the_id }).at(0)
 
-    the_follow_request = FollowRequest.where({ :recipient_id => recipient_id, :sender_id => sender_id }).at(0)
+    if the_follow_request.nil?
+      redirect_to("/", { :alert => "You can't delete that follow request." })
+    else
+      recipient = the_follow_request.recipient
+      the_follow_request.destroy
 
-    the_follow_request.destroy
-
-    redirect_to("/users/#{recipient.username}", { :notice => "Follow request deleted successfully." } )
+      redirect_to("/users/#{recipient.username}", { :notice => "Follow request deleted successfully." })
+    end
   end
 end

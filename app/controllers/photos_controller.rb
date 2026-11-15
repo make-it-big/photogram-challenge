@@ -23,8 +23,18 @@ class PhotosController < ApplicationController
     @list_of_likes = matching_likes
     @current_user_like_status = current_user_like_status
     @list_of_comments = matching_comments
-  
-    render({ :template => "photo_templates/show" })
+    
+    @the_owner_id = @the_photo.owner.id
+    @current_user_id = current_user.id
+
+    successful_follow_request = FollowRequest.where({ :sender_id => @current_user_id, :recipient_id => @the_owner_id, :status => "accepted" }).any?
+
+    if @the_photo.owner.private && @current_user_id != @the_owner_id && !successful_follow_request
+      redirect_to("/users/#{@the_photo.owner.username}", { :alert => "The account is private." })
+    else
+      render({ :template => "photo_templates/show" })
+    end
+    
 
   end
 

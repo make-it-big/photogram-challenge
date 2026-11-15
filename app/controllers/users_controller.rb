@@ -21,12 +21,19 @@ class UsersController < ApplicationController
   end
 
   def discover
-
+    # People a user follows
     my_accepted_requests = current_user.sent_follow_requests.where({ :status => "accepted" })
     following_ids = my_accepted_requests.pluck(:recipient_id)
+
+    # Condition 1: photos liked by people I follow
     photos_liked_by_following_users = Like.where({ :fan_id => following_ids }).pluck(:photo_id)
 
-    @discovered_photos = Photo.where({ :id => photos_liked_by_following_users }).order({ :created_at => :desc })
+    # Condition 2: owners I'm allowed to see
+    public_user_ids = User.where({ :private => false }).pluck(:id)
+    allowed_owner_ids = public_user_ids + following_ids + [current_user.id]
+
+    # Both conditions together
+    @discovered_photos = Photo.where({ :id => photos_liked_by_following_users, :owner_id => allowed_owner_ids }).order({ :created_at => :desc })
 
     render({ :template => "user_templates/discover" })
   end

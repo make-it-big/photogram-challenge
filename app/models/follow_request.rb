@@ -16,4 +16,12 @@ class FollowRequest < ApplicationRecord
 
   validates :status, inclusion: { in: ["pending", "accepted", "rejected"] }
   validates :recipient_id, uniqueness: { scope: :sender_id }
+
+  validate :sender_and_recipient_are_different
+
+  def sender_and_recipient_are_different
+    if self.sender_id == self.recipient_id
+      self.errors.add(:recipient_id, "can't be the same as sender")
+    end
+  end
 end

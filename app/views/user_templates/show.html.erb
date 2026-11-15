@@ -32,7 +32,7 @@
     <% else %>
       <% if @the_user.received_follow_requests.where({ :status => "accepted" }).exists?({ :sender_id => current_user.id }) %>
         <div>
-          <a href="/delete_follow_request/<%= @the_user.id %>" class="btn btn-outline">
+          <a href="/delete_follow_request/<%= @the_user.received_follow_requests.where({ :status => "accepted" }).find_by({ :sender_id => current_user.id }).id %>" class="btn btn-outline">
             Unfollow
           </a>
         </div>
@@ -40,11 +40,16 @@
         <div>
             Request sent.
 
-            <a href="/delete_follow_request/<%= @the_user.id %>" class="btn btn-outline btn-sm">
+            <a href="/delete_follow_request/<%= @the_user.received_follow_requests.where({ :status => "pending" }).find_by({ :sender_id => current_user.id }).id %>" class="btn btn-outline btn-sm">
               Cancel
             </a>
         </div>
-      
+
+      <% elsif @the_user.received_follow_requests.where({ :status => "rejected" }).exists?({ :sender_id => current_user.id }) %>
+        <div>
+          Request declined.
+        </div>
+
       <% else %>
         <div>
             <form action="/insert_follow_request" method="post">
