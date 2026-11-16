@@ -45,6 +45,25 @@ class UsersController < ApplicationController
 
     @the_user = matching_users.at(0)
     
+    matching_likes = Like.where({ :fan_id => @the_user.id })
+    liked_photo_ids = matching_likes.pluck(:photo_id)
+    @liked_photos = Photo.where({ :id => liked_photo_ids })
+    
+    # ADD THIS BLOCK:
+    @liked_photos = @liked_photos.select do |a_photo|
+      matching_users = User.where({ :id => a_photo.owner_id })
+      the_owner = matching_users.at(0)
+
+      accepted_requests = FollowRequest.where({
+        :sender_id => current_user.id,
+        :recipient_id => the_owner.id,
+        :status => "accepted"
+      })
+
+      the_owner.private != true ||
+        the_owner.id == current_user.id ||
+        accepted_requests.exists?
+    end
 
     render({ :template => "user_templates/show" })
   end

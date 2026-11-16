@@ -134,7 +134,7 @@
             <% @the_user.posts.each do |a_post| %>
               <li>
                 <a href="/photos/<%= a_post.id %>">
-                  <img src="<%= a_post.image %>" alt="" class="w-20 h-20 object-cover rounded">
+                  <img src="<%= a_post.image_url %>" alt="" class="w-20 h-20 object-cover rounded">
 
                   <span>
                     <%= a_post.caption %>
@@ -154,16 +154,16 @@
     <div id="liked-pane" class="tab-pane" data-tabs-target="panel">
       <div class="card py-0">
         <ul>
-            <% @the_user.likes.each do |a_like| %>
+            <% @liked_photos.each do |a_photo| %>
               <li>
-                <a href="/photos/<%= a_like.photo.id %>">
-                  <img src="<%= a_like.photo.image %>" alt="" class="w-20 h-20 object-cover rounded">
+                <a href="/photos/<%= a_photo.id %>">
+                  <img src="<%= a_photo.image_url %>" alt="" class="w-20 h-20 object-cover rounded">
 
                   <span>
-                    <%= a_like.photo.caption %>
+                    <%= a_photo.caption %>
 
                     <small class="block">
-                      <%= a_like.photo.owner.username %> · <%= time_ago_in_words(a_like.photo.created_at) %> ago
+                      <%= a_photo.owner.username %> · <%= time_ago_in_words(a_photo.created_at) %> ago
                     </small>
                   </span>
                 </a>

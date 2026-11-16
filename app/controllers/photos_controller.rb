@@ -41,14 +41,14 @@ class PhotosController < ApplicationController
   def create
     the_photo = Photo.new
     the_photo.caption = params.fetch("caption_param")
-    the_photo.ccomments_count = params.fetch("ccomments_count_param")
+    the_photo.comments_count = 0
     the_photo.image = params.fetch("image_param")
-    the_photo.likes_count = params.fetch("likes_count_param")
-    the_photo.owner_id = params.fetch("owner_id_param")
+    the_photo.likes_count = 0
+    the_photo.owner_id = current_user.id
 
     if the_photo.valid?
       the_photo.save
-      redirect_to("/photos", { :notice => "Photo created successfully." })
+      redirect_to("/photos/#{the_photo.id}", { :notice => "Photo created successfully." })
     else
       redirect_to("/photos", { :alert => the_photo.errors.full_messages.to_sentence })
     end
@@ -58,26 +58,33 @@ class PhotosController < ApplicationController
     the_id = params.fetch("path_id")
     the_photo = Photo.where({ :id => the_id }).at(0)
 
-    the_photo.caption = params.fetch("caption_param")
-    the_photo.ccomments_count = params.fetch("ccomments_count_param")
-    the_photo.image = params.fetch("image_param")
-    the_photo.likes_count = params.fetch("likes_count_param")
-    the_photo.owner_id = params.fetch("owner_id_param")
 
-    if the_photo.valid?
+    if params.has_key?("image_param")
+      the_photo.image = params.fetch("image_param")
+    end
+
+    if params.has_key?("caption_param")
+      the_photo.caption = params.fetch("caption_param")
+    end
+
+    if the_photo.valid? && the_photo.owner_id == current_user.id
       the_photo.save
       redirect_to("/photos/#{the_photo.id}", { :notice => "Photo updated successfully." } )
     else
-      redirect_to("/photos/#{the_photo.id}", { :alert => the_photo.errors.full_messages.to_sentence })
+      redirect_to("/photos/#{the_photo.id}", { :alert => "You are not authorized to update this photo." })
     end
   end
 
   def destroy
     the_id = params.fetch("path_id")
     the_photo = Photo.where({ :id => the_id }).at(0)
+    
+    if the_photo.owner_id == current_user.id
+      the_photo.destroy
 
-    the_photo.destroy
-
-    redirect_to("/photos", { :notice => "Photo deleted successfully." } )
+      redirect_to("/photos", { :notice => "Photo deleted successfully." } )
+    else
+      redirect_to("/photos/#{the_photo.id}", { :alert => "You are not authorized to delete this photo." })
+    end
   end
 end

@@ -8,7 +8,23 @@
   
     <% if current_user.present? %>
       
-        <a href="/photos/new">Add a photo</a>
+      <form action="/insert_photo" method="post" enctype="multipart/form-data">
+        <label for="image_field">
+          Image
+        </label>
+
+        <input type="file" id="image_field" name="image_param" accept="image/*" required="">
+
+        <label for="caption_field">
+          Caption
+        </label>
+
+        <textarea id="caption_field" name="caption_param" rows="2" placeholder="Say something about your photo..."></textarea>
+
+        <button type="submit">
+          Add photo
+        </button>
+      </form>
 
     <% else %>
         <p><a href="/users/sign_in">Sign in</a>  to add a photo.</p>
@@ -27,7 +43,7 @@
     <% @list_of_photos.each do |a_photo| %>
       <li>
         <a href="/photos/<%= a_photo.id %>">
-          <img src="<%= a_photo.image %>" alt="" class="w-20 h-20 object-cover rounded">
+          <img src="<%= a_photo.image_url %>" alt="" class="w-20 h-20 object-cover rounded">
 
           <span>
             <%= a_photo.caption %>

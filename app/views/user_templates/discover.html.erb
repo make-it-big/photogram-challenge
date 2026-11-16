@@ -8,7 +8,7 @@
     <% @discovered_photos.each do |a_photo| %>
       <li>
         <a href="/photos/<%= a_photo.id %>">
-          <img src="<%= a_photo.image %>" alt="" class="w-20 h-20 object-cover rounded">
+          <img src="<%= a_photo.image_url %>" alt="" class="w-20 h-20 object-cover rounded">
 
           <span>
             <%= a_photo.caption %>

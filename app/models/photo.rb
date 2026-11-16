@@ -12,6 +12,7 @@
 #  owner_id       :integer
 #
 class Photo < ApplicationRecord
+  mount_uploader(:image, ImageUploader)
 
   belongs_to :owner, class_name: "User", foreign_key: "owner_id", primary_key: "id"
 
