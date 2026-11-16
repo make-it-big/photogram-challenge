@@ -534,6 +534,7 @@ DEPENDENCIES
   htmlbeautifier
   http
   importmap-rails
+  ostruct
   pg (~> 1.6)
   propshaft
   pry (~> 0.16)

@@ -23,6 +23,8 @@ gem "tsort" # Required for Ruby 4.0+ (moving out of default gems)
 gem "devise"
 gem "carrierwave"
 gem "web_rake"
+gem "ostruct"
+
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude" # Ruby debugger
